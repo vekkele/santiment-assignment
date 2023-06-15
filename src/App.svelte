@@ -6,6 +6,16 @@
   import VirtualList from 'webkit/ui/VirtualList/index.svelte'
   import Asset from 'webkit/ui/ListOfAssets/Asset.svelte'
   import { favoriteProjects } from '@/stores'
+  import { projectHasText } from './utils'
+  import type { InputEvent } from './types'
+
+  let search = ''
+
+  function onSearch(e: InputEvent) {
+    search = e.target.value
+  }
+
+  $: filteredFavorites = $favoriteProjects.filter((p) => projectHasText(p, search))
 
   onMount(() => {
     projects.fetchProjects()
@@ -14,9 +24,9 @@
 
 <main class="column hv-center">
   <section class="box-section border">
-    <Search placeholder="Search for asset" />
+    <Search placeholder="Search for asset" value={search} on:input={onSearch} />
     <div class="asset-list">
-      <VirtualList itemHeight={32} items={$favoriteProjects} let:item>
+      <VirtualList itemHeight={32} items={filteredFavorites} let:item>
         <Asset {item} class="btn-ghost favorite-asset-item" />
       </VirtualList>
     </div>

@@ -12,11 +12,19 @@
   import VirtualList from 'webkit/ui/VirtualList/index.svelte'
   import Asset from 'webkit/ui/ListOfAssets/Asset.svelte'
   import Checkbox from 'webkit/ui/Checkbox.svelte'
-  import type { Project } from '@/types'
+  import type { InputEvent, Project } from '@/types'
   import { favoriteProjects, projects } from '@/stores'
+  import { projectHasText } from '@/utils'
 
-  let selected: Set<Project> = new Set($favoriteProjects)
   let closeDialog: () => void
+  let selected: Set<Project> = new Set($favoriteProjects)
+  let search = ''
+
+  $: filteredProjects = $projects.filter((p) => projectHasText(p, search))
+
+  function onSearch(e: InputEvent) {
+    search = e.target.value
+  }
 
   function toggle(item: Project) {
     if (selected.has(item)) {
@@ -36,9 +44,9 @@
 
 <Dialog {...$$props} bind:closeDialog title="Edit assets">
   <section class="content">
-    <Search placeholder="Search for asset" />
+    <Search value={search} on:input={onSearch} placeholder="Search for asset" />
     <div class="asset-list">
-      <VirtualList itemHeight={32} items={$projects} let:item>
+      <VirtualList itemHeight={32} items={filteredProjects} let:item>
         <Asset {item} on:click={() => toggle(item)}>
           <Checkbox isActive={selected.has(item)} />
         </Asset>
