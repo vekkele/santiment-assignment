@@ -12,10 +12,11 @@
   import VirtualList from 'webkit/ui/VirtualList/index.svelte'
   import Asset from 'webkit/ui/ListOfAssets/Asset.svelte'
   import Checkbox from 'webkit/ui/Checkbox.svelte'
-  import projects from '@/stores/projects'
   import type { Project } from '@/types'
+  import { favoriteProjects, projects } from '@/stores'
 
-  let selected: Set<Project> = new Set()
+  let selected: Set<Project> = new Set($favoriteProjects)
+  let closeDialog: () => void
 
   function toggle(item: Project) {
     if (selected.has(item)) {
@@ -26,9 +27,14 @@
 
     selected = selected
   }
+
+  function apply() {
+    favoriteProjects.set(Array.from(selected))
+    closeDialog()
+  }
 </script>
 
-<Dialog {...$$props} title="Edit assets">
+<Dialog {...$$props} bind:closeDialog title="Edit assets">
   <section class="content">
     <Search placeholder="Search for asset" />
     <div class="asset-list">
@@ -39,8 +45,8 @@
       </VirtualList>
     </div>
     <div class="button-row row">
-      <button class="btn-1">Apply changes</button>
-      <button class="btn-2">Cancel</button>
+      <button class="btn-1" on:click={apply}>Apply changes</button>
+      <button class="btn-2" on:click={closeDialog}>Cancel</button>
     </div>
   </section>
 </Dialog>
@@ -51,7 +57,7 @@
   }
 
   .asset-list {
-    height: 288px;
+    height: 278px;
   }
 
   .button-row {
