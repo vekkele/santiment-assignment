@@ -1,13 +1,13 @@
 <script lang="ts" context="module">
   import { dialogs } from 'webkit/ui/Dialog/dialogs'
   import type { DialogProps } from 'webkit/ui/Dialog/Dialog.svelte'
+  import ProjectsDialog from './ProjectsDialog.svelte'
 
   export const showProjectsDialog = (props: DialogProps) => dialogs.showOnce(ProjectsDialog, props)
 </script>
 
 <script lang="ts">
   import Dialog from 'webkit/ui/Dialog/Dialog.svelte'
-  import ProjectsDialog from './ProjectsDialog.svelte'
   import Search from 'webkit/ui/Search.svelte'
   import VirtualList from 'webkit/ui/VirtualList/index.svelte'
   import Asset from 'webkit/ui/ListOfAssets/Asset.svelte'
